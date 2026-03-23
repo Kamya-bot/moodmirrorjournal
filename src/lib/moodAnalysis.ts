@@ -1,40 +1,49 @@
 import { Mood } from "@/types/mood";
 
-const MOOD_KEYWORDS: Record<Mood, string[]> = {
-  happy: [
-    "happy", "joy", "joyful", "excited", "great", "wonderful", "amazing", "fantastic",
-    "love", "loving", "grateful", "thankful", "blessed", "cheerful", "delighted",
-    "thrilled", "ecstatic", "glad", "pleased", "content", "satisfied", "awesome",
-    "brilliant", "excellent", "good", "nice", "beautiful", "fun", "laugh", "smile",
-    "celebrate", "proud", "accomplish", "succeed", "win", "positive", "optimistic"
-  ],
-  sad: [
-    "sad", "unhappy", "depressed", "down", "blue", "lonely", "alone", "crying",
-    "tears", "heartbroken", "disappointed", "hopeless", "miserable", "gloomy",
-    "melancholy", "grief", "loss", "miss", "missing", "empty", "numb", "hurt",
-    "pain", "suffer", "sorrow", "regret", "sorry", "failed", "failure"
-  ],
-  angry: [
-    "angry", "mad", "furious", "rage", "hate", "annoyed", "irritated", "frustrated",
-    "upset", "outraged", "livid", "hostile", "aggressive", "bitter", "resentful",
-    "disgusted", "fed up", "sick of", "tired of", "can't stand", "infuriated"
-  ],
-  stressed: [
-    "stressed", "overwhelmed", "pressure", "deadline", "busy", "overworked",
-    "exhausted", "burned out", "burnout", "too much", "can't cope", "struggling",
-    "swamped", "loaded", "hectic", "chaos", "tension", "tense", "demanding"
-  ],
-  anxious: [
-    "anxious", "anxiety", "worried", "nervous", "scared", "fear", "panic",
-    "restless", "uneasy", "dread", "apprehensive", "uncertain", "insecure",
-    "overthinking", "what if", "cant sleep", "insomnia", "trembling", "shaking"
-  ],
-  calm: [
-    "calm", "peaceful", "relaxed", "serene", "tranquil", "zen", "meditation",
-    "mindful", "balanced", "centered", "quiet", "still", "gentle", "ease",
-    "comfortable", "rested", "refreshed", "harmony", "soothing", "breathing"
-  ],
+type Weight = "strong" | "medium" | "weak";
+const WEIGHT_SCORE: Record<Weight, number> = { strong: 3, medium: 2, weak: 1 };
+
+const MOOD_KEYWORDS: Record<Mood, Record<Weight, string[]>> = {
+  happy: {
+    strong: ["ecstatic", "thrilled", "overjoyed", "elated", "euphoric", "delighted", "blissful"],
+    medium: ["happy", "joyful", "excited", "wonderful", "amazing", "fantastic", "love", "loving", "grateful", "cheerful", "proud", "celebrate"],
+    weak: ["good", "nice", "pleased", "content", "satisfied", "okay", "fine", "fun", "smile", "positive", "optimistic"],
+  },
+  sad: {
+    strong: ["heartbroken", "devastated", "miserable", "hopeless", "depressed", "grief", "despair"],
+    medium: ["sad", "unhappy", "crying", "tears", "lonely", "gloomy", "melancholy", "sorrow"],
+    weak: ["down", "blue", "disappointed", "miss", "missing", "empty", "regret", "sorry", "failed", "failure"],
+  },
+  angry: {
+    strong: ["furious", "rage", "livid", "outraged", "infuriated", "hate", "hostile"],
+    medium: ["angry", "mad", "aggressive", "bitter", "resentful", "disgusted", "fed up", "sick of", "can't stand"],
+    weak: ["annoyed", "irritated", "frustrated", "upset", "tired of"],
+  },
+  stressed: {
+    strong: ["overwhelmed", "burned out", "burnout", "can't cope", "breaking down"],
+    medium: ["stressed", "overworked", "exhausted", "swamped", "chaos", "too much"],
+    weak: ["busy", "pressure", "deadline", "hectic", "tense", "demanding", "loaded"],
+  },
+  anxious: {
+    strong: ["panic", "dread", "terror", "paralyzed", "spiraling"],
+    medium: ["anxious", "anxiety", "scared", "fear", "restless", "insomnia", "cant sleep", "overthinking"],
+    weak: ["worried", "nervous", "uneasy", "uncertain", "insecure", "what if", "apprehensive"],
+  },
+  calm: {
+    strong: ["serene", "blissful", "tranquil", "zen", "at peace"],
+    medium: ["calm", "peaceful", "relaxed", "meditation", "mindful", "balanced", "centered", "harmony"],
+    weak: ["quiet", "still", "gentle", "ease", "comfortable", "rested", "refreshed", "soothing", "breathing"],
+  },
 };
+
+const NEGATION_WORDS = ["not", "don't", "dont", "doesn't", "doesnt", "isn't", "isnt", "wasn't", "wasnt", "never", "no", "hardly", "barely", "can't", "cant", "won't", "wont"];
+const NEGATION_WINDOW = 3; // words
+
+function isNegated(text: string, matchIndex: number): boolean {
+  const before = text.slice(0, matchIndex).trim();
+  const words = before.split(/\s+/).slice(-NEGATION_WINDOW);
+  return words.some(w => NEGATION_WORDS.includes(w.toLowerCase()));
+}
 
 export function detectMood(text: string): Mood {
   const lower = text.toLowerCase();
@@ -42,21 +51,32 @@ export function detectMood(text: string): Mood {
     happy: 0, sad: 0, angry: 0, stressed: 0, anxious: 0, calm: 0,
   };
 
-  for (const [mood, keywords] of Object.entries(MOOD_KEYWORDS) as [Mood, string[]][]) {
-    for (const keyword of keywords) {
-      const regex = new RegExp(`\\b${keyword}\\b`, "gi");
-      const matches = lower.match(regex);
-      if (matches) {
-        scores[mood] += matches.length;
+  for (const [mood, weights] of Object.entries(MOOD_KEYWORDS) as [Mood, Record<Weight, string[]>][]) {
+    for (const [weight, keywords] of Object.entries(weights) as [Weight, string[]][]) {
+      for (const keyword of keywords) {
+        const escaped = keyword.replace(/\s+/g, "\\s+");
+        const regex = new RegExp(`\\b${escaped}\\b`, "gi");
+        let match: RegExpExecArray | null;
+        while ((match = regex.exec(lower)) !== null) {
+          if (isNegated(lower, match.index)) {
+            // Negation: penalize this mood slightly
+            scores[mood] -= WEIGHT_SCORE[weight] * 0.5;
+          } else {
+            scores[mood] += WEIGHT_SCORE[weight];
+          }
+        }
       }
     }
   }
 
   const maxScore = Math.max(...Object.values(scores));
-  if (maxScore === 0) return "calm"; // default
+  if (maxScore <= 0) return "calm";
 
-  return (Object.entries(scores) as [Mood, number][])
-    .sort((a, b) => b[1] - a[1])[0][0];
+  // Deterministic tie-break by priority order
+  const PRIORITY: Mood[] = ["anxious", "stressed", "sad", "angry", "happy", "calm"];
+  const topMoods = (Object.entries(scores) as [Mood, number][]).filter(([, s]) => s === maxScore);
+  if (topMoods.length === 1) return topMoods[0][0];
+  return PRIORITY.find(m => topMoods.some(([mood]) => mood === m)) || topMoods[0][0];
 }
 
 const TIPS: Record<Mood, string[]> = {
