@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       journal_entries: {
         Row: {
+          confidence: number | null
           created_at: string
           detected_mood: string
           id: string
@@ -25,6 +26,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          confidence?: number | null
           created_at?: string
           detected_mood: string
           id?: string
@@ -34,6 +36,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          confidence?: number | null
           created_at?: string
           detected_mood?: string
           id?: string

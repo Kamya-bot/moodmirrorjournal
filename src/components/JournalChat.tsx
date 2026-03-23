@@ -46,14 +46,12 @@ export default function JournalChat() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header with export */}
       {entries && entries.length > 0 && (
         <div className="flex justify-end px-4 pt-3">
           <ExportEntries entries={entries} />
         </div>
       )}
 
-      {/* Chat area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedEntries.length === 0 && (
           <div className="text-center text-muted-foreground py-20 animate-fade-in">
@@ -69,7 +67,6 @@ export default function JournalChat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area */}
       <div className="border-t border-border p-4 bg-card">
         <div className="flex gap-2 items-end max-w-3xl mx-auto">
           <VoiceInput
@@ -104,10 +101,10 @@ export default function JournalChat() {
 
 function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => void }) {
   const mood = entry.detected_mood as Mood;
+  const confidencePct = entry.confidence != null ? Math.round(entry.confidence * 100) : null;
 
   return (
     <div className="max-w-3xl mx-auto animate-fade-in">
-      {/* User message */}
       <div className="flex justify-end mb-2">
         <div className="bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%]">
           <p className="text-sm">{entry.text}</p>
@@ -117,7 +114,6 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
         </div>
       </div>
 
-      {/* AI response */}
       <div className="flex justify-start mb-1">
         <div className="bg-card border border-border rounded-2xl rounded-bl-sm px-4 py-3 max-w-[80%]">
           <div className="flex items-center gap-2 mb-1">
@@ -125,6 +121,11 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
             <span className="text-xs font-medium text-muted-foreground capitalize">
               {MOOD_EMOJI[mood]} {mood}
             </span>
+            {confidencePct != null && (
+              <span className="text-xs text-muted-foreground/70">
+                · {confidencePct}% confidence
+              </span>
+            )}
           </div>
           {entry.tip && <p className="text-sm text-foreground">{entry.tip}</p>}
           <p className="text-xs text-muted-foreground mt-2 italic">

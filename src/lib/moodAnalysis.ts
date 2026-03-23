@@ -37,7 +37,7 @@ const MOOD_KEYWORDS: Record<Mood, Record<Weight, string[]>> = {
 };
 
 const NEGATION_WORDS = ["not", "don't", "dont", "doesn't", "doesnt", "isn't", "isnt", "wasn't", "wasnt", "never", "no", "hardly", "barely", "can't", "cant", "won't", "wont"];
-const NEGATION_WINDOW = 3; // words
+const NEGATION_WINDOW = 3;
 
 function isNegated(text: string, matchIndex: number): boolean {
   const before = text.slice(0, matchIndex).trim();
@@ -45,7 +45,17 @@ function isNegated(text: string, matchIndex: number): boolean {
   return words.some(w => NEGATION_WORDS.includes(w.toLowerCase()));
 }
 
+export interface MoodResult {
+  mood: Mood;
+  confidence: number;
+  scores: Record<Mood, number>;
+}
+
 export function detectMood(text: string): Mood {
+  return detectMoodDetailed(text).mood;
+}
+
+export function detectMoodDetailed(text: string): MoodResult {
   const lower = text.toLowerCase();
   const scores: Record<Mood, number> = {
     happy: 0, sad: 0, angry: 0, stressed: 0, anxious: 0, calm: 0,
@@ -59,7 +69,6 @@ export function detectMood(text: string): Mood {
         let match: RegExpExecArray | null;
         while ((match = regex.exec(lower)) !== null) {
           if (isNegated(lower, match.index)) {
-            // Negation: penalize this mood slightly
             scores[mood] -= WEIGHT_SCORE[weight] * 0.5;
           } else {
             scores[mood] += WEIGHT_SCORE[weight];
@@ -70,13 +79,60 @@ export function detectMood(text: string): Mood {
   }
 
   const maxScore = Math.max(...Object.values(scores));
-  if (maxScore <= 0) return "calm";
+  if (maxScore <= 0) {
+    return { mood: "calm", confidence: 0.3, scores };
+  }
 
-  // Deterministic tie-break by priority order
   const PRIORITY: Mood[] = ["anxious", "stressed", "sad", "angry", "happy", "calm"];
   const topMoods = (Object.entries(scores) as [Mood, number][]).filter(([, s]) => s === maxScore);
-  if (topMoods.length === 1) return topMoods[0][0];
-  return PRIORITY.find(m => topMoods.some(([mood]) => mood === m)) || topMoods[0][0];
+  const detectedMood = topMoods.length === 1
+    ? topMoods[0][0]
+    : PRIORITY.find(m => topMoods.some(([mood]) => mood === m)) || topMoods[0][0];
+
+  // Calculate confidence as ratio of top score to total positive scores
+  const totalPositive = Object.values(scores).filter(s => s > 0).reduce((a, b) => a + b, 0);
+  const confidence = totalPositive > 0 ? Math.min(maxScore / totalPositive, 1) : 0.3;
+
+  return { mood: detectedMood, confidence: Math.round(confidence * 100) / 100, scores };
+}
+
+/**
+ * Sentence-level analysis: splits text into sentences,
+ * analyzes each, and returns the combined result.
+ */
+export function detectMoodSentenceLevel(text: string): MoodResult {
+  const sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 3);
+
+  if (sentences.length <= 1) {
+    return detectMoodDetailed(text);
+  }
+
+  const combinedScores: Record<Mood, number> = {
+    happy: 0, sad: 0, angry: 0, stressed: 0, anxious: 0, calm: 0,
+  };
+
+  for (const sentence of sentences) {
+    const result = detectMoodDetailed(sentence);
+    for (const [mood, score] of Object.entries(result.scores) as [Mood, number][]) {
+      combinedScores[mood] += score;
+    }
+  }
+
+  const maxScore = Math.max(...Object.values(combinedScores));
+  if (maxScore <= 0) {
+    return { mood: "calm", confidence: 0.3, scores: combinedScores };
+  }
+
+  const PRIORITY: Mood[] = ["anxious", "stressed", "sad", "angry", "happy", "calm"];
+  const topMoods = (Object.entries(combinedScores) as [Mood, number][]).filter(([, s]) => s === maxScore);
+  const detectedMood = topMoods.length === 1
+    ? topMoods[0][0]
+    : PRIORITY.find(m => topMoods.some(([mood]) => mood === m)) || topMoods[0][0];
+
+  const totalPositive = Object.values(combinedScores).filter(s => s > 0).reduce((a, b) => a + b, 0);
+  const confidence = totalPositive > 0 ? Math.min(maxScore / totalPositive, 1) : 0.3;
+
+  return { mood: detectedMood, confidence: Math.round(confidence * 100) / 100, scores: combinedScores };
 }
 
 const TIPS: Record<Mood, string[]> = {
