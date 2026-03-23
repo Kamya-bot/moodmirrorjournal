@@ -6,6 +6,8 @@ import { MOOD_EMOJI, MOOD_COLORS, getQuoteForMood } from "@/lib/moodAnalysis";
 import { JournalEntry, Mood } from "@/types/mood";
 import { Send, Trash2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import VoiceInput from "@/components/VoiceInput";
+import ExportEntries from "@/components/ExportEntries";
 
 export default function JournalChat() {
   const [text, setText] = useState("");
@@ -44,6 +46,13 @@ export default function JournalChat() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Header with export */}
+      {entries && entries.length > 0 && (
+        <div className="flex justify-end px-4 pt-3">
+          <ExportEntries entries={entries} />
+        </div>
+      )}
+
       {/* Chat area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedEntries.length === 0 && (
@@ -63,10 +72,14 @@ export default function JournalChat() {
       {/* Input area */}
       <div className="border-t border-border p-4 bg-card">
         <div className="flex gap-2 items-end max-w-3xl mx-auto">
+          <VoiceInput
+            onTranscript={(t) => setText((prev) => (prev ? prev + " " + t : t))}
+            disabled={createEntry.isPending}
+          />
           <Textarea
             placeholder="How are you feeling today?"
             value={text}
-            onChange={e => setText(e.target.value)}
+            onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             className="min-h-[48px] max-h-[120px] resize-none"
             rows={1}
