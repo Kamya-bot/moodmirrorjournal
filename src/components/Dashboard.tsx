@@ -174,6 +174,9 @@ export default function Dashboard() {
           </LineChart>
         </ResponsiveContainer>
       </Card>
+
+      {/* Mood Insights */}
+      {entries && <MoodInsights entries={entries} />}
     </div>
   );
 }
