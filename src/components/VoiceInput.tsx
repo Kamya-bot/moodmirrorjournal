@@ -8,6 +8,13 @@ interface VoiceInputProps {
   disabled?: boolean;
 }
 
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
 export default function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -22,24 +29,24 @@ export default function VoiceInput({ onTranscript, disabled }: VoiceInputProps) 
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = false;
     recognition.lang = "en-US";
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event) => {
       const last = event.results[event.results.length - 1];
       if (last.isFinal) {
         onTranscript(last[0].transcript);
       }
     };
 
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    recognition.onerror = (event) => {
       console.error("Speech recognition error:", event.error);
       setIsListening(false);
       if (event.error === "not-allowed") {
-        toast({ title: "Microphone access denied", description: "Please allow microphone access to use voice input.", variant: "destructive" });
+        toast({ title: "Microphone access denied", description: "Please allow microphone access.", variant: "destructive" });
       }
     };
 

@@ -78,6 +78,14 @@ export default function AuthPage() {
             {isLogin ? "Sign Up" : "Sign In"}
           </button>
         </p>
+
+        {isLogin && (
+          <p className="text-center text-sm mt-2">
+            <a href="/forgot-password" className="text-muted-foreground hover:text-primary">
+              Forgot password?
+            </a>
+          </p>
+        )}
       </Card>
     </div>
   );
