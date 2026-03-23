@@ -6,6 +6,7 @@ export interface JournalEntry {
   text: string;
   detected_mood: Mood;
   tip: string | null;
+  confidence: number | null;
   created_at: string;
   updated_at: string;
 }

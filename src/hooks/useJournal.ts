@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { JournalEntry, Mood } from "@/types/mood";
-import { detectMood, getTipForMood } from "@/lib/moodAnalysis";
+import { detectMoodSentenceLevel, getTipForMood } from "@/lib/moodAnalysis";
 
 export function useJournalEntries() {
   const { user } = useAuth();
@@ -15,24 +15,19 @@ export function useJournalEntries() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as JournalEntry[];
+      return data as unknown as JournalEntry[];
     },
     enabled: !!user,
   });
 }
 
-async function detectMoodWithFallback(text: string): Promise<{ mood: Mood; tip: string }> {
-  const mood = detectMood(text);
-  const tip = getTipForMood(mood);
+async function detectMoodWithFallback(text: string): Promise<{ mood: Mood; tip: string; confidence: number }> {
+  // Use sentence-level analysis
+  const result = detectMoodSentenceLevel(text);
+  const tip = getTipForMood(result.mood);
 
-  // Check if keyword score is low (defaults to "calm" with no strong signals)
-  // In that case, try AI fallback
-  const lower = text.toLowerCase();
-  const hasStrongSignal = ["happy", "sad", "angry", "stressed", "anxious", "calm"].some(
-    (m) => lower.includes(m)
-  );
-
-  if (mood === "calm" && !hasStrongSignal && text.trim().length > 15) {
+  // If confidence is low and text is substantial, try AI fallback
+  if (result.confidence < 0.5 && text.trim().length > 15) {
     try {
       const { data, error } = await supabase.functions.invoke("detect-mood", {
         body: { text },
@@ -41,14 +36,15 @@ async function detectMoodWithFallback(text: string): Promise<{ mood: Mood; tip: 
         return {
           mood: data.mood as Mood,
           tip: data.tip || getTipForMood(data.mood as Mood),
+          confidence: data.confidence ?? 0.8,
         };
       }
     } catch {
-      // Fallback to keyword-based detection silently
+      // Fallback silently to keyword-based
     }
   }
 
-  return { mood, tip };
+  return { mood: result.mood, tip, confidence: result.confidence };
 }
 
 export function useCreateEntry() {
@@ -58,16 +54,16 @@ export function useCreateEntry() {
   return useMutation({
     mutationFn: async (text: string) => {
       if (!user) throw new Error("Not authenticated");
-      const { mood, tip } = await detectMoodWithFallback(text);
+      const { mood, tip, confidence } = await detectMoodWithFallback(text);
 
       const { data, error } = await supabase
         .from("journal_entries")
-        .insert({ user_id: user.id, text, detected_mood: mood, tip })
+        .insert({ user_id: user.id, text, detected_mood: mood, tip, confidence } as any)
         .select()
         .single();
 
       if (error) throw error;
-      return data as JournalEntry;
+      return data as unknown as JournalEntry;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journal-entries"] });
@@ -80,17 +76,17 @@ export function useUpdateEntry() {
 
   return useMutation({
     mutationFn: async ({ id, text }: { id: string; text: string }) => {
-      const { mood, tip } = await detectMoodWithFallback(text);
+      const { mood, tip, confidence } = await detectMoodWithFallback(text);
 
       const { data, error } = await supabase
         .from("journal_entries")
-        .update({ text, detected_mood: mood, tip })
+        .update({ text, detected_mood: mood, tip, confidence } as any)
         .eq("id", id)
         .select()
         .single();
 
       if (error) throw error;
-      return data as JournalEntry;
+      return data as unknown as JournalEntry;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["journal-entries"] });
