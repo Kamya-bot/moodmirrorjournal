@@ -10,10 +10,21 @@ interface VoiceInputProps {
 
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
   }
 }
+
+type SpeechRecognition = {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: { results: { isFinal: boolean; [index: number]: { transcript: string } }[] }) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
 
 export default function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
