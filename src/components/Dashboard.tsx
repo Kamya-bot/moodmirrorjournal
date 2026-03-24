@@ -5,6 +5,7 @@ import { MOOD_EMOJI } from "@/lib/moodAnalysis";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import MoodInsights from "@/components/MoodInsights";
+import MonthlyRecap from "@/components/MonthlyRecap";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
   LineChart, Line, CartesianGrid,
