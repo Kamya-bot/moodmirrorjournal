@@ -10,6 +10,7 @@ const links = [
   { to: "/dashboard", icon: BarChart3, label: "Dashboard" },
   { to: "/calendar", icon: Calendar, label: "Calendar" },
   { to: "/search", icon: Search, label: "Search" },
+  { to: "/achievements", icon: Trophy, label: "Achievements" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

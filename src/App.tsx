@@ -63,6 +63,14 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/achievements"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout><AchievementsPageRoute /></AppLayout>
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
