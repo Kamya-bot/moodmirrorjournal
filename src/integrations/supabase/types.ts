@@ -14,12 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          achievement_key: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_key: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_key?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           confidence: number | null
           created_at: string
           detected_mood: string
           id: string
+          is_favorite: boolean
+          is_pinned: boolean
           text: string
           tip: string | null
           updated_at: string
@@ -30,6 +53,8 @@ export type Database = {
           created_at?: string
           detected_mood: string
           id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
           text: string
           tip?: string | null
           updated_at?: string
@@ -40,6 +65,8 @@ export type Database = {
           created_at?: string
           detected_mood?: string
           id?: string
+          is_favorite?: boolean
+          is_pinned?: boolean
           text?: string
           tip?: string | null
           updated_at?: string

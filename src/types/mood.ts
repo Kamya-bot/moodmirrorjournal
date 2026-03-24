@@ -7,6 +7,8 @@ export interface JournalEntry {
   detected_mood: Mood;
   tip: string | null;
   confidence: number | null;
+  is_favorite: boolean;
+  is_pinned: boolean;
   created_at: string;
   updated_at: string;
 }

@@ -12,6 +12,7 @@ import DashboardPage from "./pages/DashboardPage";
 import CalendarPage from "./pages/CalendarPage";
 import SearchPage from "./pages/SearchPage";
 import AuthPage from "./pages/AuthPage";
+import AchievementsPageRoute from "./pages/AchievementsPageRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -59,6 +60,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AppLayout><SearchPage /></AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/achievements"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout><AchievementsPageRoute /></AppLayout>
                   </ProtectedRoute>
                 }
               />
