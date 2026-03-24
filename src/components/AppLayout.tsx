@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X, Trophy } from "lucide-react";
+import { MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X, Trophy, Star } from "lucide-react";
 import { useState } from "react";
 
 const links = [
@@ -11,6 +11,7 @@ const links = [
   { to: "/calendar", icon: Calendar, label: "Calendar" },
   { to: "/search", icon: Search, label: "Search" },
   { to: "/achievements", icon: Trophy, label: "Achievements" },
+  { to: "/favorites", icon: Star, label: "Favorites" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

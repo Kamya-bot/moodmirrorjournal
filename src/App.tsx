@@ -13,6 +13,7 @@ import CalendarPage from "./pages/CalendarPage";
 import SearchPage from "./pages/SearchPage";
 import AuthPage from "./pages/AuthPage";
 import AchievementsPageRoute from "./pages/AchievementsPageRoute";
+import FavoritesPage from "./pages/FavoritesPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -68,6 +69,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <AppLayout><AchievementsPageRoute /></AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/favorites"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout><FavoritesPage /></AppLayout>
                   </ProtectedRoute>
                 }
               />
