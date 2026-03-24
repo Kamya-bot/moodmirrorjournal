@@ -65,8 +65,13 @@ export default function JournalChat() {
   const unpinned = sorted.filter(e => !e.is_pinned);
   const sortedEntries = [...pinned, ...unpinned];
 
+  const latestMood = sortedEntries.length > 0
+    ? (sortedEntries[0].detected_mood as Mood)
+    : null;
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      <MoodThemeBackground mood={latestMood} />
       <AchievementToast />
       {entries && entries.length > 0 && (
         <div className="flex justify-end px-4 pt-3">

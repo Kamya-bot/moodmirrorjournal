@@ -175,6 +175,9 @@ export default function Dashboard() {
         </ResponsiveContainer>
       </Card>
 
+      {/* Monthly Recap */}
+      {entries && <MonthlyRecap entries={entries} />}
+
       {/* Mood Insights */}
       {entries && <MoodInsights entries={entries} />}
     </div>

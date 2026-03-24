@@ -11,6 +11,7 @@ const links = [
   { to: "/calendar", icon: Calendar, label: "Calendar" },
   { to: "/search", icon: Search, label: "Search" },
   { to: "/achievements", icon: Trophy, label: "Achievements" },
+  { to: "/favorites", icon: Star, label: "Favorites" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

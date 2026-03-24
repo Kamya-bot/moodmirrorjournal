@@ -71,6 +71,14 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/favorites"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout><FavoritesPage /></AppLayout>
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
