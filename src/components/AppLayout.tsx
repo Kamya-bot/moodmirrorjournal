@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X } from "lucide-react";
+import { MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X, Trophy } from "lucide-react";
 import { useState } from "react";
 
 const links = [
