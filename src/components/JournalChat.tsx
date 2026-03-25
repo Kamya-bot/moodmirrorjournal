@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MOOD_EMOJI, MOOD_COLORS, getQuoteForMood } from "@/lib/moodAnalysis";
 import { JournalEntry, Mood } from "@/types/mood";
-import { Send, Trash2, Loader2, Star, Pin } from "lucide-react";
+import { Send, Trash2, Loader2, Star, Pin, Maximize2 } from "lucide-react";
 import { format } from "date-fns";
 import VoiceInput from "@/components/VoiceInput";
 import ExportEntries from "@/components/ExportEntries";
