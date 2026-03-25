@@ -11,6 +11,7 @@ import ExportEntries from "@/components/ExportEntries";
 import DailyPrompt from "@/components/DailyPrompt";
 import AchievementToast from "@/components/AchievementToast";
 import MoodThemeBackground from "@/components/MoodThemeBackground";
+import AmbientMode from "@/components/AmbientMode";
 
 const DRAFT_KEY = "moodmirror-draft";
 
