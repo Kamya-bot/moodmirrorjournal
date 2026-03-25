@@ -60,7 +60,6 @@ export default function JournalChat() {
     );
   }
 
-  // Sort: pinned first, then chronological
   const sorted = [...(entries || [])].reverse();
   const pinned = sorted.filter(e => e.is_pinned);
   const unpinned = sorted.filter(e => !e.is_pinned);
@@ -74,6 +73,12 @@ export default function JournalChat() {
     <div className="flex flex-col h-full relative">
       <MoodThemeBackground mood={latestMood} />
       <AchievementToast />
+      <AmbientMode
+        open={ambientOpen}
+        onClose={() => setAmbientOpen(false)}
+        initialText={text}
+        onTextChange={(t) => setText(t)}
+      />
       {entries && entries.length > 0 && (
         <div className="flex justify-end px-4 pt-3">
           <ExportEntries entries={entries} />
@@ -113,6 +118,15 @@ export default function JournalChat() {
             onTranscript={(t) => setText((prev) => (prev ? prev + " " + t : t))}
             disabled={createEntry.isPending}
           />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setAmbientOpen(true)}
+            className="shrink-0 text-muted-foreground"
+            title="Focus Mode"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </Button>
           <Textarea
             placeholder="How are you feeling today?"
             value={text}
