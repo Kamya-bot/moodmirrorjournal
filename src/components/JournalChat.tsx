@@ -23,6 +23,7 @@ export default function JournalChat() {
   const createEntry = useCreateEntry();
   const deleteEntry = useDeleteEntry();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [ambientOpen, setAmbientOpen] = useState(false);
 
   // Autosave draft
   useEffect(() => {
