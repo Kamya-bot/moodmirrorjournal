@@ -182,6 +182,9 @@ export default function Dashboard() {
 
       {/* Mood Insights */}
       {entries && <MoodInsights entries={entries} />}
+
+      {/* Memory Lane */}
+      <MemoryLane />
     </div>
   );
 }
