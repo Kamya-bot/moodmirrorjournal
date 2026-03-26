@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import MoodInsights from "@/components/MoodInsights";
 import MonthlyRecap from "@/components/MonthlyRecap";
+import MemoryLane from "@/components/MemoryLane";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
   LineChart, Line, CartesianGrid,

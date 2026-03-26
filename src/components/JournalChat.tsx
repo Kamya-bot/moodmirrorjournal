@@ -216,6 +216,7 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
             </button>
             </div>
           </div>
+          <TagManager entryId={entry.id} />
         </div>
       </div>
     </div>
