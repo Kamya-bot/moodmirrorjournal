@@ -55,7 +55,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="space-y-2 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground px-2 truncate">{user?.email}</p>
+          <div className="flex items-center gap-2 px-2 mb-1">
+            <span className="text-2xl">{profile?.avatar_emoji || "😊"}</span>
+            <div className="min-w-0">
+              {profile?.display_name && (
+                <p className="text-sm font-medium text-foreground truncate">{profile.display_name}</p>
+              )}
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            </div>
+          </div>
+          <ProfileSettings />
           <Button variant="ghost" size="sm" className="w-full justify-start gap-2" onClick={toggleTheme}>
             {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             {theme === "light" ? "Dark Mode" : "Light Mode"}
