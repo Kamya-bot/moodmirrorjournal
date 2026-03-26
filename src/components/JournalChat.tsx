@@ -191,7 +191,9 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
           <p className="text-xs text-muted-foreground mt-2 italic">
             {getQuoteForMood(mood)}
           </p>
-          <div className="flex justify-end mt-1 gap-1">
+          <div className="flex items-center justify-between mt-1 gap-1">
+            <EntryReactions entryId={entry.id} reactions={entry.reactions || {}} />
+            <div className="flex gap-1">
             <button
               onClick={() => toggleFav.mutate({ id: entry.id, is_favorite: !entry.is_favorite })}
               className={`transition-colors ${entry.is_favorite ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-500"}`}
