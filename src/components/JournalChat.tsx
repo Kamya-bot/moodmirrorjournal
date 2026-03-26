@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MOOD_EMOJI, MOOD_COLORS, getQuoteForMood } from "@/lib/moodAnalysis";
 import { JournalEntry, Mood } from "@/types/mood";
 import { Send, Trash2, Loader2, Star, Pin, Maximize2 } from "lucide-react";
+import EntryReactions from "@/components/EntryReactions";
 import { format } from "date-fns";
 import VoiceInput from "@/components/VoiceInput";
 import ExportEntries from "@/components/ExportEntries";
@@ -190,7 +191,9 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
           <p className="text-xs text-muted-foreground mt-2 italic">
             {getQuoteForMood(mood)}
           </p>
-          <div className="flex justify-end mt-1 gap-1">
+          <div className="flex items-center justify-between mt-1 gap-1">
+            <EntryReactions entryId={entry.id} reactions={entry.reactions || {}} />
+            <div className="flex gap-1">
             <button
               onClick={() => toggleFav.mutate({ id: entry.id, is_favorite: !entry.is_favorite })}
               className={`transition-colors ${entry.is_favorite ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-500"}`}
@@ -208,6 +211,7 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
             <button onClick={onDelete} className="text-muted-foreground hover:text-destructive transition-colors">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
+            </div>
           </div>
         </div>
       </div>
