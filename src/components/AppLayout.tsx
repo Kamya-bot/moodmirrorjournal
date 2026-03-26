@@ -19,6 +19,7 @@ const links = [
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { signOut, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { data: profile } = useProfile();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
