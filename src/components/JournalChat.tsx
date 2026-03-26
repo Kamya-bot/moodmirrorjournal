@@ -211,6 +211,7 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
             <button onClick={onDelete} className="text-muted-foreground hover:text-destructive transition-colors">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
+            </div>
           </div>
         </div>
       </div>
