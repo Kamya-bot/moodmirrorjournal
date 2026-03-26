@@ -43,6 +43,7 @@ export type Database = {
           id: string
           is_favorite: boolean
           is_pinned: boolean
+          reactions: Json | null
           text: string
           tip: string | null
           updated_at: string
@@ -55,6 +56,7 @@ export type Database = {
           id?: string
           is_favorite?: boolean
           is_pinned?: boolean
+          reactions?: Json | null
           text: string
           tip?: string | null
           updated_at?: string
@@ -67,8 +69,36 @@ export type Database = {
           id?: string
           is_favorite?: boolean
           is_pinned?: boolean
+          reactions?: Json | null
           text?: string
           tip?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_emoji: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_emoji?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_emoji?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
           updated_at?: string
           user_id?: string
         }
