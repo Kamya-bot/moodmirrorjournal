@@ -13,6 +13,8 @@ import DailyPrompt from "@/components/DailyPrompt";
 import AchievementToast from "@/components/AchievementToast";
 import MoodThemeBackground from "@/components/MoodThemeBackground";
 import AmbientMode from "@/components/AmbientMode";
+import TemplatesPicker from "@/components/TemplatesPicker";
+import TagManager from "@/components/TagManager";
 
 const DRAFT_KEY = "moodmirror-draft";
 
