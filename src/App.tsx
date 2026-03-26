@@ -20,6 +20,12 @@ const AchievementsPageRoute = lazy(() => import("./pages/AchievementsPageRoute")
 const FavoritesPage = lazy(() => import("./pages/FavoritesPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const ChallengesPage = lazy(() => import("./pages/ChallengesPage"));
+const VaultPage = lazy(() => import("./pages/VaultPage"));
+const RemindersPage = lazy(() => import("./pages/RemindersPage"));
+const CollectionsPage = lazy(() => import("./pages/CollectionsPageRoute"));
+const PromptLibraryPage = lazy(() => import("./pages/PromptLibraryPage"));
+const ProgressPage = lazy(() => import("./pages/ProgressPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -30,6 +36,10 @@ function PageLoader() {
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   );
+}
+
+function ProtectedPage({ children }: { children: React.ReactNode }) {
+  return <ProtectedRoute><AppLayout>{children}</AppLayout></ProtectedRoute>;
 }
 
 const App = () => (
@@ -46,54 +56,18 @@ const App = () => (
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><Index /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><DashboardPage /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/calendar"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><CalendarPage /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/search"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><SearchPage /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/achievements"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><AchievementsPageRoute /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/favorites"
-                    element={
-                      <ProtectedRoute>
-                        <AppLayout><FavoritesPage /></AppLayout>
-                      </ProtectedRoute>
-                    }
-                  />
+                  <Route path="/" element={<ProtectedPage><Index /></ProtectedPage>} />
+                  <Route path="/dashboard" element={<ProtectedPage><DashboardPage /></ProtectedPage>} />
+                  <Route path="/calendar" element={<ProtectedPage><CalendarPage /></ProtectedPage>} />
+                  <Route path="/search" element={<ProtectedPage><SearchPage /></ProtectedPage>} />
+                  <Route path="/achievements" element={<ProtectedPage><AchievementsPageRoute /></ProtectedPage>} />
+                  <Route path="/favorites" element={<ProtectedPage><FavoritesPage /></ProtectedPage>} />
+                  <Route path="/challenges" element={<ProtectedPage><ChallengesPage /></ProtectedPage>} />
+                  <Route path="/vault" element={<ProtectedPage><VaultPage /></ProtectedPage>} />
+                  <Route path="/reminders" element={<ProtectedPage><RemindersPage /></ProtectedPage>} />
+                  <Route path="/collections" element={<ProtectedPage><CollectionsPage /></ProtectedPage>} />
+                  <Route path="/prompts" element={<ProtectedPage><PromptLibraryPage /></ProtectedPage>} />
+                  <Route path="/progress" element={<ProtectedPage><ProgressPage /></ProtectedPage>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

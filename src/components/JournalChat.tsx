@@ -13,12 +13,18 @@ import DailyPrompt from "@/components/DailyPrompt";
 import AchievementToast from "@/components/AchievementToast";
 import MoodThemeBackground from "@/components/MoodThemeBackground";
 import AmbientMode from "@/components/AmbientMode";
+import TemplatesPicker from "@/components/TemplatesPicker";
+import TagManager from "@/components/TagManager";
 
 const DRAFT_KEY = "moodmirror-draft";
 
 export default function JournalChat() {
   const [text, setText] = useState(() => {
-    try { return localStorage.getItem(DRAFT_KEY) || ""; } catch { return ""; }
+    try {
+      const prompt = sessionStorage.getItem("moodmirror-use-prompt");
+      if (prompt) { sessionStorage.removeItem("moodmirror-use-prompt"); return prompt; }
+      return localStorage.getItem(DRAFT_KEY) || "";
+    } catch { return ""; }
   });
   const { data: entries, isLoading } = useJournalEntries();
   const createEntry = useCreateEntry();
@@ -119,6 +125,7 @@ export default function JournalChat() {
             onTranscript={(t) => setText((prev) => (prev ? prev + " " + t : t))}
             disabled={createEntry.isPending}
           />
+          <TemplatesPicker onUseTemplate={(t) => setText(t)} />
           <Button
             variant="ghost"
             size="icon"
@@ -213,6 +220,7 @@ function ChatBubble({ entry, onDelete }: { entry: JournalEntry; onDelete: () => 
             </button>
             </div>
           </div>
+          <TagManager entryId={entry.id} />
         </div>
       </div>
     </div>

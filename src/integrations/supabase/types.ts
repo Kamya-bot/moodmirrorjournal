@@ -35,14 +35,106 @@ export type Database = {
         }
         Relationships: []
       }
+      challenges: {
+        Row: {
+          category: string
+          description: string
+          duration_days: number
+          icon: string | null
+          id: string
+          prompts: Json | null
+          title: string
+        }
+        Insert: {
+          category: string
+          description: string
+          duration_days: number
+          icon?: string | null
+          id?: string
+          prompts?: Json | null
+          title: string
+        }
+        Update: {
+          category?: string
+          description?: string
+          duration_days?: number
+          icon?: string | null
+          id?: string
+          prompts?: Json | null
+          title?: string
+        }
+        Relationships: []
+      }
+      collections: {
+        Row: {
+          color: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      entry_tags: {
+        Row: {
+          entry_id: string
+          id: string
+          tag_id: string
+        }
+        Insert: {
+          entry_id: string
+          id?: string
+          tag_id: string
+        }
+        Update: {
+          entry_id?: string
+          id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entry_tags_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entry_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_entries: {
         Row: {
+          collection_id: string | null
           confidence: number | null
           created_at: string
           detected_mood: string
           id: string
           is_favorite: boolean
           is_pinned: boolean
+          is_vault: boolean
           reactions: Json | null
           text: string
           tip: string | null
@@ -50,12 +142,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          collection_id?: string | null
           confidence?: number | null
           created_at?: string
           detected_mood: string
           id?: string
           is_favorite?: boolean
           is_pinned?: boolean
+          is_vault?: boolean
           reactions?: Json | null
           text: string
           tip?: string | null
@@ -63,17 +157,60 @@ export type Database = {
           user_id: string
         }
         Update: {
+          collection_id?: string | null
           confidence?: number | null
           created_at?: string
           detected_mood?: string
           id?: string
           is_favorite?: boolean
           is_pinned?: boolean
+          is_vault?: boolean
           reactions?: Json | null
           text?: string
           tip?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      missions: {
+        Row: {
+          description: string
+          icon: string | null
+          id: string
+          mission_type: string
+          period: string
+          target: number
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          description: string
+          icon?: string | null
+          id?: string
+          mission_type: string
+          period?: string
+          target?: number
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          description?: string
+          icon?: string | null
+          id?: string
+          mission_type?: string
+          period?: string
+          target?: number
+          title?: string
+          xp_reward?: number
         }
         Relationships: []
       }
@@ -101,6 +238,181 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      reminders: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          reminder_time: string
+          reminder_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          reminder_time?: string
+          reminder_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          reminder_time?: string
+          reminder_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      templates: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          is_system: boolean
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_system?: boolean
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          current_day: number
+          entries_completed: Json | null
+          id: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          current_day?: number
+          entries_completed?: Json | null
+          id?: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          current_day?: number
+          entries_completed?: Json | null
+          id?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_missions: {
+        Row: {
+          completed: boolean
+          id: string
+          mission_id: string
+          period_start: string
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          id?: string
+          mission_id: string
+          period_start?: string
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          id?: string
+          mission_id?: string
+          period_start?: string
+          progress?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_missions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          id: string
+          level: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          id?: string
+          level?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          id?: string
+          level?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
         }
         Relationships: []
       }
