@@ -5,7 +5,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import {
   MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X,
-  Trophy, Star, Target, Lock, Bell, FolderOpen, Lightbulb, Flame, ScrollArea
+  Trophy, Star, Target, Lock, Bell, FolderOpen, Lightbulb, Flame
 } from "lucide-react";
 import { useState } from "react";
 import ProfileSettings from "@/components/ProfileSettings";
