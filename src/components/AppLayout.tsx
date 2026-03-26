@@ -1,9 +1,11 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
+import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, BarChart3, Calendar, Search, LogOut, Sun, Moon, Menu, X, Trophy, Star } from "lucide-react";
 import { useState } from "react";
+import ProfileSettings from "@/components/ProfileSettings";
 
 const links = [
   { to: "/", icon: MessageCircle, label: "Journal" },
