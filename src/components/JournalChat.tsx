@@ -121,6 +121,7 @@ export default function JournalChat() {
             onTranscript={(t) => setText((prev) => (prev ? prev + " " + t : t))}
             disabled={createEntry.isPending}
           />
+          <TemplatesPicker onUseTemplate={(t) => setText(t)} />
           <Button
             variant="ghost"
             size="icon"
