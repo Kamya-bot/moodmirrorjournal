@@ -20,7 +20,11 @@ const DRAFT_KEY = "moodmirror-draft";
 
 export default function JournalChat() {
   const [text, setText] = useState(() => {
-    try { return localStorage.getItem(DRAFT_KEY) || ""; } catch { return ""; }
+    try {
+      const prompt = sessionStorage.getItem("moodmirror-use-prompt");
+      if (prompt) { sessionStorage.removeItem("moodmirror-use-prompt"); return prompt; }
+      return localStorage.getItem(DRAFT_KEY) || "";
+    } catch { return ""; }
   });
   const { data: entries, isLoading } = useJournalEntries();
   const createEntry = useCreateEntry();
